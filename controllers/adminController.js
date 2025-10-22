@@ -11,12 +11,23 @@ function daysBetween(start, end) {
 
 
 function calculateAnnualEntitlement(startDate, currentDate = new Date()) {
-  const years = currentDate.getFullYear() - new Date(startDate).getFullYear();
-  if (years < 1) return 0;
-  if (years < 5) return 14;
-  if (years < 10) return 21;
-  return 30;
+  const start = new Date(startDate);
+  const years = currentDate.getFullYear() - start.getFullYear();
+
+  if (years < 1) return 0; 
+
+  
+  const firstPeriod = Math.min(years, 5) * 14;
+
+  
+  const secondPeriod = years > 5 ? Math.min(years - 5, 5) * 21 : 0;
+
+  
+  const thirdPeriod = years > 10 ? (years - 10) * 30 : 0;
+
+  return firstPeriod + secondPeriod + thirdPeriod;
 }
+
 
 
 async function getAllPersonnels(req, res) {

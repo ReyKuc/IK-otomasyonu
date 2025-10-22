@@ -1,14 +1,22 @@
 function calculateAnnualEntitlement(iseBaslamaTarihi, now = new Date()) {
-  const diff = now.getFullYear() - iseBaslamaTarihi.getFullYear();
+  const start = new Date(iseBaslamaTarihi);
+  let diff = now.getFullYear() - start.getFullYear();
+
+  // Eğer yıl farkı kadar zaman tam dolmadıysa (ay/gün olarak)
+  const m1 = now.getMonth(), m2 = start.getMonth();
+  const d1 = now.getDate(), d2 = start.getDate();
+  if (m1 < m2 || (m1 === m2 && d1 < d2)) diff--;
+
   if (diff < 1) return 0;
-  if (diff >= 1 && diff < 5) return 14;
-  if (diff >= 5 && diff < 10) return 21;
-  return 30;
-}
 
-function daysBetween(start, end) {
-  const diffTime = new Date(end) - new Date(start);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-}
+  let total = 0;
+  if (diff <= 5) {
+    total = diff * 14;
+  } else if (diff <= 10) {
+    total = (5 * 14) + ((diff - 5) * 21);
+  } else {
+    total = (5 * 14) + (5 * 21) + ((diff - 10) * 30);
+  }
 
-module.exports = { calculateAnnualEntitlement, daysBetween };
+  return total;
+}
